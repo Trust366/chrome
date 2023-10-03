@@ -42,7 +42,16 @@ INSTALLED_APPS = [
     "drf_spectacular",
     'rest_framework',
     'video',
+    'django_celery_results',
 ]
+
+
+from celery import Celery
+
+app = Celery('your_project')
+app.config_from_object('django.conf:settings')
+app.autodiscover_tasks(lambda: settings.INSTALLED_APPS)
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -57,6 +66,10 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
 ]
 CORS_ALLOW_ALL_ORIGINS = True
+
+
+CELERY_BROKER_URL = 'pyamqp://guest@localhost//'  # RabbitMQ broker URL
+CELERY_RESULT_BACKEND = 'django-db'
 
 ROOT_URLCONF = 'screen_record_backend.urls'
 
